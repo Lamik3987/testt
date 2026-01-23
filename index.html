@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#26a69a">
+    <title>Тест: Психологическая помощь</title>
+    <style>
+        /* УСПОКАИВАЮЩАЯ ЦВЕТОВАЯ ПАЛИТРА */
+        :root {
+            --bg-color: #eaf4f4;
+            --card-bg: #ffffff;
+            --text-main: #37474f;
+            --text-muted: #607d8b;
+            
+            --primary-color: #26a69a;
+            --primary-hover: #00897b;
+            
+            --success-bg: #e8f5e9;
+            --success-text: #2e7d32;
+            --success-border: #a5d6a7;
+            
+            --error-bg: #fff0f0;
+            --error-text: #a94442;
+            --error-border: #eeb4b4;
+            
+            --rationale-bg: #e0f2f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        .quiz-container {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(38, 166, 154, 0.15);
+            max-width: 700px;
+            width: 100%;
+            border: 1px solid #e0f2f1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #00695c;
+            margin-bottom: 30px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        .progress {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 15px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            font-size: 21px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .options button {
+            display: block;
+            width: 100%;
+            padding: 16px 22px;
+            margin: 12px 0;
+            border: 2px solid #b2dfdb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.3s ease;
+            font-size: 17px;
+            color: var(--text-main);
+        }
+
+        .options button:hover:not(:disabled) {
+            background-color: #e0f2f1;
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .options button.correct {
+            background-color: var(--success-bg);
+            border-color: var(--success-border);
+            color: var(--success-text);
+            font-weight: 600;
+            box-shadow: inset 0 0 0 1px var(--success-border);
+        }
+
+        .options button.wrong {
+            background-color: var(--error-bg);
+            border-color: var(--error-border);
+            color: var(--error-text);
+            font-weight: 600;
+            box-shadow: inset 0 0 0 1px var(--error-border);
+            opacity: 1;
+        }
+
+        .options button:disabled {
+            cursor: default;
+            opacity: 0.9;
+        }
+
+        .rationale {
+            margin-top: 25px;
+            padding: 25px;
+            background-color: var(--rationale-bg);
+            border-left: 6px solid var(--primary-color);
+            border-radius: 8px;
+            display: none;
+            font-size: 16px;
+            color: #004d40;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .next-btn {
+            display: none;
+            width: 100%;
+            padding: 18px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 15px rgba(38, 166, 154, 0.3);
+        }
+
+        .next-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .result-box {
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .result-score {
+            font-size: 52px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 25px 0;
+        }
+
+        /* Стиль для кнопки-ссылки */
+        .manual-link-btn {
+            display: block;
+            margin: 15px auto;
+            padding: 15px;
+            background-color: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            max-width: 90%;
+        }
+
+        .manual-link-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .links-title {
+            margin-top: 30px; 
+            margin-bottom: 10px; 
+            font-weight: bold; 
+            color: #00695c;
+        }
+        
+        .hotline {
+            background-color: #e0f2f1;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #00695c;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container" id="quiz">
+    <h1>Проверка знаний: Психологическая помощь</h1>
+    
+    <div id="quiz-content">
+        <div class="progress" id="progress-text">Вопрос 1 из 15</div>
+        <div class="question" id="question-text">Загрузка...</div>
+        <div class="options" id="options-container"></div>
+        <div class="rationale" id="rationale-text"></div>
+        <button class="next-btn" id="next-btn" onclick="nextQuestion()">Следующий вопрос</button>
+    </div>
+
+    <div class="result-box" id="result-box">
+        <h2 style="color: #00695c; margin-bottom: 10px;">Тест завершен</h2>
+        <div class="result-score"><span id="score">0</span> / <span id="total">0</span></div>
+        <p id="feedback-msg" style="font-size: 19px; margin-bottom: 20px; color: var(--text-main);"></p>
+        
+        <div class="hotline">
+            📞 Горячая линия экстренной психологической помощи МЧС России: <br>
+            <a href="tel:+74959895050" style="color: #004d40; text-decoration: none; font-size: 20px;">+7 (495) 989-50-50</a>
+        </div>
+
+        <div id="manual-link-container"></div>
+
+        <button class="next-btn" style="display:inline-block; margin-top:30px;" onclick="location.reload()">Пройти заново</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "1. Главное правило безопасности при оказании помощи?",
+            a: [
+                { text: "Бежать к пострадавшему как можно скорее", isCorrect: false },
+                { text: "Убедиться в собственной безопасности", isCorrect: true },
+                { text: "Начать громко звать на помощь", isCorrect: false },
+                { text: "Начать перевязку до осмотра места", isCorrect: false }
+            ],
+            rationale: "Главный принцип — «Не навреди». Мертвый спасатель никого не спасет."
+        },
+        {
+            q: "2. Человек в ступоре (неподвижен). Что делать?",
+            a: [
+                { text: "Трясти за плечи", isCorrect: false },
+                { text: "Кричать", isCorrect: false },
+                { text: "Встать рядом, говорить тихо, подстроиться под дыхание", isCorrect: true },
+                { text: "Оставить одного", isCorrect: false }
+            ],
+            rationale: "При ступоре нужно мягкое присутствие, резкие действия опасны."
+        },
+        {
+            q: "3. У пострадавшего истерика. Вокруг толпа. Первое действие?",
+            a: [
+                { text: "Удалить зрителей", isCorrect: true },
+                { text: "Спорить с пострадавшим", isCorrect: false },
+                { text: "Крепко обнять", isCorrect: false },
+                { text: "Дать пощечину", isCorrect: false }
+            ],
+            rationale: "Истерика подпитывается вниманием публики. Нужно убрать зрителей."
+        },
+        {
+            q: "4. Какая фраза является ОШИБКОЙ при горе?",
+            a: [
+                { text: "«Я здесь с тобой»", isCorrect: false },
+                { text: "«Всё будет хорошо, не плачь»", isCorrect: true },
+                { text: "«Хочешь воды?»", isCorrect: false },
+                { text: "«Я тебе сочувствую»", isCorrect: false }
+            ],
+            rationale: "Нельзя давать ложных обещаний («всё будет хорошо») и запрещать плакать."
+        },
+        {
+            q: "5. Техника «Заземление 5-4-3-2-1» нужна для...",
+            a: [
+                { text: "Улучшения сна", isCorrect: false },
+                { text: "Снятия тревоги и паники", isCorrect: true },
+                { text: "Сдерживания агрессии", isCorrect: false },
+                { text: "Разминки", isCorrect: false }
+            ],
+            rationale: "Техника переключает мозг с тревоги на реальность (зрение, слух, осязание)."
+        },
+        {
+            q: "6. Как дышать при панической атаке?",
+            a: [
+                { text: "Часто и быстро", isCorrect: false },
+                { text: "Медленный вдох и очень длинный выдох", isCorrect: true },
+                { text: "Задержать дыхание", isCorrect: false },
+                { text: "Только ртом", isCorrect: false }
+            ],
+            rationale: "Длинный выдох успокаивает нервную систему."
+        },
+        {
+            q: "7. У человека нервная дрожь. Ваши действия?",
+            a: [
+                { text: "Укутать и обнять", isCorrect: false },
+                { text: "Не мешать дрожи, слегка усилить её", isCorrect: true },
+                { text: "Дать лекарство", isCorrect: false },
+                { text: "Сказать «успокойся»", isCorrect: false }
+            ],
+            rationale: "Дрожь сбрасывает напряжение. Нельзя её блокировать теплом сразу."
+        },
+        {
+            q: "8. Человек агрессивен. Ошибка помощника?",
+            a: [
+                { text: "Держать дистанцию", isCorrect: false },
+                { text: "Говорить спокойным голосом", isCorrect: false },
+                { text: "Смотреть пристально в глаза, стоять напротив", isCorrect: true },
+                { text: "Убрать лишних людей", isCorrect: false }
+            ],
+            rationale: "Прямой взгляд и поза «лицом к лицу» воспринимаются как угроза."
+        },
+        {
+            q: "9. Суть «Активного слушания»?",
+            a: [
+                { text: "Молчать", isCorrect: false },
+                { text: "Давать советы", isCorrect: false },
+                { text: "Отражать чувства, кивать, не перебивать", isCorrect: true },
+                { text: "Ставить диагноз", isCorrect: false }
+            ],
+            rationale: "Это показывает человеку, что он услышан и принят."
+        },
+        {
+            q: "10. Цель Первой психологической помощи?",
+            a: [
+                { text: "Вылечить травму", isCorrect: false },
+                { text: "Узнать детали", isCorrect: false },
+                { text: "Стабилизировать состояние", isCorrect: true },
+                { text: "Заставить забыть", isCorrect: false }
+            ],
+            rationale: "Задача — не лечение, а поддержка и безопасность."
+        },
+        {
+            q: "11. Вы общаетесь с пострадавшим ребенком. Какое положение тела верное?",
+            a: [
+                { text: "Стоять над ребенком, чтобы контролировать ситуацию", isCorrect: false },
+                { text: "Присесть на корточки, чтобы глаза были на одном уровне", isCorrect: true },
+                { text: "Посадить ребенка на высокий стул", isCorrect: false },
+                { text: "Держать ребенка за руку, но смотреть по сторонам", isCorrect: false }
+            ],
+            rationale: "Поза «нависания» пугает детей. Важно быть на одном уровне глаз для доверия."
+        },
+        {
+            q: "12. Можно ли прикасаться к пострадавшему (обнимать, брать за руку)?",
+            a: [
+                { text: "Да, тактильный контакт всегда успокаивает", isCorrect: false },
+                { text: "Нет, никогда нельзя трогать людей", isCorrect: false },
+                { text: "Только если вы спросили разрешение или человек сам потянулся", isCorrect: true },
+                { text: "Только если это человек вашего пола", isCorrect: false }
+            ],
+            rationale: "Прикосновение без спроса может быть воспринято как насилие. Всегда спрашивайте: «Можно я возьму тебя за руку?»"
+        },
+        {
+            q: "13. Нужно ли расспрашивать человека о подробностях трагедии?",
+            a: [
+                { text: "Да, ему нужно выговориться во всех деталях прямо сейчас", isCorrect: false },
+                { text: "Да, чтобы понять, кто виноват", isCorrect: false },
+                { text: "Нет, не заставляйте говорить. Слушайте, только если он сам хочет", isCorrect: true },
+                { text: "Нужно перебивать и переводить тему на позитив", isCorrect: false }
+            ],
+            rationale: "Принуждение к рассказу может вызвать ретравматизацию. Мы не следователи, мы — поддержка."
+        },
+        {
+            q: "14. Вы оказываете помощь, но чувствуете, что сами теряете самообладание (вас трясет, страшно). Что делать?",
+            a: [
+                { text: "Терпеть и продолжать помощь через силу", isCorrect: false },
+                { text: "Передать пострадавшего другому помощнику и отойти отдохнуть", isCorrect: true },
+                { text: "Начать рассказывать пострадавшему о своих чувствах", isCorrect: false },
+                { text: "Выпить алкоголь для успокоения", isCorrect: false }
+            ],
+            rationale: "Правило безопасности: если помощник «сломался», он становится вторым пострадавшим. Сначала позаботьтесь о себе."
+        },
+        {
+            q: "15. Человек в шоке просит пить. Как правильно поступить?",
+            a: [
+                { text: "Дать сразу много воды", isCorrect: false },
+                { text: "Дать горячий сладкий чай, если нет травм живота и сознание ясное", isCorrect: true },
+                { text: "Дать алкоголь", isCorrect: false },
+                { text: "Не давать ничего до приезда врачей", isCorrect: false }
+            ],
+            rationale: "Теплое сладкое питье помогает согреться и дает глюкозу мозгу. Но важно убедиться, что человек может глотать и у него не ранен живот."
+        }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const qData = questions[currentQuestion];
+        document.getElementById("progress-text").innerText = `Вопрос ${currentQuestion + 1} из ${questions.length}`;
+        document.getElementById("question-text").innerText = qData.q;
+        document.getElementById("rationale-text").style.display = "none";
+        document.getElementById("next-btn").style.display = "none";
+        
+        const optionsDiv = document.getElementById("options-container");
+        optionsDiv.innerHTML = "";
+
+        qData.a.forEach((opt) => {
+            const btn = document.createElement("button");
+            btn.innerText = opt.text;
+            const rationaleText = qData.rationale;
+            btn.onclick = () => checkAnswer(btn, opt.isCorrect, rationaleText);
+            optionsDiv.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(btn, isCorrect, rationale) {
+        const buttons = document.querySelectorAll(".options button");
+        buttons.forEach(b => b.disabled = true);
+
+        if (isCorrect) {
+            btn.classList.add("correct");
+            score++;
+        } else {
+            btn.classList.add("wrong");
+            buttons.forEach((b, index) => {
+                if (questions[currentQuestion].a[index].isCorrect) b.classList.add("correct");
+            });
+        }
+
+        const ratDiv = document.getElementById("rationale-text");
+        ratDiv.innerHTML = (isCorrect ? 
+            "<strong style='color:#2e7d32'>✓ Верно!</strong><br>" : 
+            "<strong style='color:#a94442'>✗ Ошибка.</strong><br>") + rationale;
+        ratDiv.style.display = "block";
+        document.getElementById("next-btn").style.display = "block";
+    }
+
+    function nextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            loadQuestion();
+            document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById("quiz-content").style.display = "none";
+        document.getElementById("result-box").style.display = "block";
+        document.getElementById("score").innerText = score;
+        document.getElementById("total").innerText = questions.length;
+        
+        const container = document.getElementById("manual-link-container");
+        container.innerHTML = ""; 
+
+        // ИСПОЛЬЗУЕМ СТАБИЛЬНЫЕ ССЫЛКИ:
+        // 1. Главная страница Интернет-службы МЧС (работает)
+        // 2. Страница с рекомендациями Якутского МЧС (полный текст правил, официальный домен)
+        const linksHTML = `
+            <div class="links-title">Рекомендуемые материалы:</div>
+            
+            <a href="https://psi.mchs.gov.ru/" target="_blank" class="manual-link-btn">🌐 Интернет-служба психологической помощи МЧС</a>
+            
+            <a href="https://14.mchs.gov.ru/deyatelnost/poleznaya-informaciya/rekomendacii-naseleniyu/srochnaya-psihologicheskaya-pomoshch-postradavshemu-v-chrezvychaynoy-situacii" target="_blank" class="manual-link-btn">🚑 Памятка по экстренной помощи (Сайт МЧС)</a>
+        `;
+
+        let msg = "";
+        if (score >= 13) {
+            msg = "Блестяще! Вы отлично готовы помогать. Ссылки ниже — для углубления знаний.";
+            container.innerHTML = linksHTML;
+        } else if (score >= 8) {
+            msg = "Хороший результат! Но мы рекомендуем прочитать эти памятки, чтобы чувствовать себя увереннее.";
+            container.innerHTML = linksHTML;
+        } else {
+            msg = "Пожалуйста, изучите эти правила. Незнание алгоритмов может навредить. Сохраните эти ссылки:";
+            container.innerHTML = linksHTML;
+        }
+        
+        document.getElementById("feedback-msg").innerText = msg;
+        document.getElementById('quiz').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    loadQuestion();
+</script>
+
+</body>
+</html>
